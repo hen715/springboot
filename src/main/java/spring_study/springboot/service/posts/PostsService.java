@@ -5,9 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import spring_study.springboot.domain.Posts;
 import spring_study.springboot.domain.PostsRepository;
+import spring_study.springboot.web.dto.PostsListResponseDto;
 import spring_study.springboot.web.dto.PostsResponseDto;
 import spring_study.springboot.web.dto.PostsSaveRequestDto;
 import spring_study.springboot.web.dto.PostsUpdateRequestDto;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -30,5 +34,9 @@ public class PostsService {
         Posts entity = postsRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시글이 없습니다. id="+id));
 
         return new PostsResponseDto(entity);
+    }
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public List<PostsListResponseDto> findAllDesc(){
+        return postsRepository.findAllDesc().stream().map(PostsListResponseDto::new).collect(Collectors.toList());
     }
 }
