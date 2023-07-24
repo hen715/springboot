@@ -1,10 +1,12 @@
 package spring_study.springboot.web;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import spring_study.springboot.config.auth.dto.SessionUser;
 import spring_study.springboot.service.posts.PostsService;
 import spring_study.springboot.web.dto.PostsResponseDto;
 
@@ -13,9 +15,13 @@ import spring_study.springboot.web.dto.PostsResponseDto;
 public class IndexController {
 
     private final PostsService postsService;
+    private final HttpSession httpSession;
     @GetMapping("/")
     public String index(Model model){
         model.addAttribute("posts", postsService.findAllDesc());
+        SessionUser user = (SessionUser) httpSession.getAttribute("user");//로그인 성공 시 세션에 정보 저장
+        if(user!=null)
+            model.addAttribute("userName",user.getName());
         return "index";
     }
 
